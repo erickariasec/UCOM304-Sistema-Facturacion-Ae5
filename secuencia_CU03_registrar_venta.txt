@@ -1,0 +1,32 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor Vendedor as v
+control ControladorFacturacion as ctrl
+entity Cliente as c
+entity Producto as p
+entity Factura as f
+
+v -> ctrl : procesarVenta(idCliente, items)
+activate ctrl
+
+ctrl -> c : getDatosFiscales()
+activate c
+return datosFiscales
+
+loop por cada item
+    ctrl -> p : getPrecio()
+    activate p
+    return precio
+    ctrl -> p : actualizarStock(cantidad)
+end
+
+ctrl -> f ** : new Factura(datosFiscales, items)
+ctrl -> f : calcularTotal()
+activate f
+return totalVenta
+
+ctrl --> v : mostrarConfirmacion(totalVenta)
+deactivate ctrl
+@enduml

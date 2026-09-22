@@ -1,0 +1,56 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+
+class Cliente {
+  - idCliente: String
+  - nombre: String
+  - ruc: String
+  + getDatosFiscales(): String
+}
+
+class Producto {
+  - idProducto: String
+  - nombre: String
+  - precioBase: Double
+  - stock: Integer
+  + actualizarStock(cantidad: Integer): void
+  + getPrecio(): Double
+}
+
+class Factura {
+  - idFactura: Integer
+  - fecha: Date
+  - subtotal: Double
+  - iva: Double
+  - total: Double
+  - estado: String
+  + calcularTotal(): Double
+  + aplicarDescuento(porcentaje: Double): void
+}
+
+class DetalleFactura {
+  - cantidad: Integer
+  - precioUnitario: Double
+  - subtotalLinea: Double
+  + calcularSubtotalLinea(): Double
+}
+
+class ControladorFacturacion {
+  + procesarVenta(idCliente: String, items: List): void
+  + solicitarAutorizacion(descuento: Double): Boolean
+}
+
+class Supervisor {
+  - idSupervisor: String
+  - nivelAcceso: Integer
+  + autorizarDescuento(factura: Factura): Boolean
+}
+
+Cliente "1" <-- "0..*" Factura : pertenece a <
+Factura "1" *-- "1..*" DetalleFactura : contiene >
+DetalleFactura "0..*" --> "1" Producto : describe >
+ControladorFacturacion ..> Factura : gestiona >
+Supervisor "1" ..> "0..*" Factura : autoriza >
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor Vendedor as v
+control ControladorFacturacion as ctrl
+entity Factura as f
+actor Supervisor as sup
+
+v -> ctrl : solicitarDescuento(15%)
+activate ctrl
+
+alt descuento > 10%
+    ctrl -> sup : autorizarDescuento(factura)
+    activate sup
+    sup --> ctrl : true (autorizado)
+    deactivate sup
+    
+    ctrl -> f : aplicarDescuento(15%)
+    activate f
+    f -> f : calcularTotal()
+    return totalActualizado
+    
+    ctrl --> v : mostrarDescuentoAplicado()
+else descuento <= 10%
+    ctrl -> f : aplicarDescuento(descuento)
+    activate f
+    return totalActualizado
+    ctrl --> v : mostrarDescuentoAplicado()
+end
+
+deactivate ctrl
+@enduml
